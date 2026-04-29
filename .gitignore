@@ -1,40 +1,77 @@
+# ----------------------
 # Environment variables
+# ----------------------
 .env
 .env.*
+!.env.example   # allow example file
 
+# ----------------------
 # Python
+# ----------------------
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
+*$py.class
 
+# ----------------------
 # Virtual environments
+# ----------------------
 venv/
 env/
 .venv/
 
+# ----------------------
+# Logs
+# ----------------------
+*.log
+logs/
+
+# ----------------------
+# Model files (IMPORTANT for ML projects)
+# ----------------------
+*.h5
+*.pt
+*.pth
+*.ckpt
+*.joblib
+*.pkl
+
+# ----------------------
+# Data files (optional but recommended)
+# ----------------------
+data/
+datasets/
+
+# ----------------------
 # Node (if applicable)
+# ----------------------
 node_modules/
 
-# Logs
-*.log
+# ----------------------
+# Build / distribution
+# ----------------------
+dist/
+build/
+*.egg-info/
 
+# ----------------------
 # OS files
+# ----------------------
 .DS_Store
 Thumbs.db
 
+# ----------------------
 # IDE
+# ----------------------
 .vscode/
 .idea/
 
-# Build / dist
-dist/
-build/
+# ----------------------
+# Jupyter (if used)
+# ----------------------
+.ipynb_checkpoints/
 
-# Large files
-*.zip
-*.tar
-*.gz
-*.h5
-*.pt
-*.ckpt
+# ----------------------
+# Temporary files
+# ----------------------
+*.tmp
+*.swp
