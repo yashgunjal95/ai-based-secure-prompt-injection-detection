@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Secure Prompt Injection Detection — Architecture</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #fff;
+  color: #111;
+  padding: 40px 24px 60px;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.fig-cap {
+  font-size: 11px;
+  text-align: center;
+  color: #555;
+  margin-bottom: 28px;
+  font-style: italic;
+  line-height: 1.6;
+}
+.fig-cap b { font-style: normal; }
+
+.flow { display: flex; flex-direction: column; align-items: center; }
+
+/* Nodes */
+.node {
+  width: 100%;
+  border: 1.5px solid #bbb;
+  border-radius: 8px;
+  padding: 12px 16px;
+  background: #f9f9f9;
+}
+.node .title {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 3px;
+  color: #111;
+}
+.node .sub {
+  font-size: 11px;
+  color: #555;
+  line-height: 1.5;
+}
+
+/* Decision box */
+.decision {
+  width: 100%;
+  border: 1.5px solid #bbb;
+  border-radius: 8px;
+  padding: 12px 16px;
+  background: #f9f9f9;
+}
+.decision .title {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #111;
+}
+.decision .formula {
+  font-size: 11px;
+  color: #333;
+  font-family: 'Courier New', monospace;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 6px 10px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+.thresholds {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+}
+.thr {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 6px 4px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  background: #fff;
+  color: #333;
+}
+
+/* Arrow */
+.arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+}
+.arrow-line {
+  width: 1.5px;
+  height: 18px;
+  background: #888;
+}
+.arrow-head {
+  width: 0; height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 7px solid #888;
+}
+
+/* Section label */
+.label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #888;
+  align-self: flex-start;
+  margin-bottom: 4px;
+}
+
+/* Three branches */
+.branches {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  width: 100%;
+}
+.branch {
+  border: 1.5px solid #bbb;
+  border-radius: 8px;
+  padding: 10px 10px;
+  background: #f9f9f9;
+  text-align: center;
+}
+.branch .btitle {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #111;
+}
+.branch .bsub {
+  font-size: 10px;
+  color: #555;
+  line-height: 1.4;
+}
+
+/* End pill */
+.end-pill {
+  border: 1.5px solid #111;
+  border-radius: 50px;
+  padding: 10px 36px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #111;
+  background: #fff;
+  text-align: center;
+}
+
+.sp { height: 4px; }
+</style>
+</head>
+<body>
+
+<p class="fig-cap"><b>Fig. 1.</b> AI-based secure prompt injection detection system with enterprise LLM agent.</p>
+
+<div class="flow">
+
+  <!-- Input -->
+  <div class="label">Input</div>
+  <div class="node">
+    <div class="title">User prompt</div>
+    <div class="sub">Raw unverified text from employee or user</div>
+  </div>
+
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <!-- Layer 1 -->
+  <div class="label">Layer 1 — Rule-based detection &nbsp;·&nbsp; weight 0.30</div>
+  <div class="node">
+    <div class="title">Rule-based scanner</div>
+    <div class="sub">78 regex patterns · 9 attack categories · &lt;1 ms · no external API</div>
+  </div>
+
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <!-- Layer 2 -->
+  <div class="label">Layer 2 — ML classification &nbsp;·&nbsp; weight 0.35</div>
+  <div class="node">
+    <div class="title">TF-IDF + logistic regression</div>
+    <div class="sub">n-gram (1–3) · max 8,000 features · output: 0.0–1.0 · 3–8 ms</div>
+  </div>
+
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <!-- Layer 3 -->
+  <div class="label">Layer 3 — LLM semantic validation &nbsp;·&nbsp; weight 0.35</div>
+  <div class="node">
+    <div class="title">LLM semantic validator</div>
+    <div class="sub">Groq Llama-3.3-70B · verdict + risk score + reasoning · fail-safe: 0.5 on error</div>
+  </div>
+
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <!-- Decision Engine -->
+  <div class="label">Decision engine</div>
+  <div class="decision">
+    <div class="title">Score aggregation &amp; routing</div>
+    <div class="formula">Final score = L1×0.30 + L2×0.35 + L3×0.35 → override rules → route</div>
+    <div class="thresholds">
+      <div class="thr">🚫 Block<br><span style="font-weight:400; font-size:10px">score ≥ 0.65</span></div>
+      <div class="thr">🧹 Sanitize<br><span style="font-weight:400; font-size:10px">0.40 – 0.65</span></div>
+      <div class="thr">✅ Allow<br><span style="font-weight:400; font-size:10px">score &lt; 0.40</span></div>
+    </div>
+  </div>
+
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <!-- Routing -->
+  <div class="label">Routing handlers</div>
+  <div class="branches">
+    <div class="branch">
+      <div class="btitle">Block</div>
+      <div class="bsub">Agent skipped · rejection message · incident logged · END</div>
+    </div>
+    <div class="branch">
+      <div class="btitle">Sanitize</div>
+      <div class="bsub">Strip override phrases · remove injection tokens → agent</div>
+    </div>
+    <div class="branch">
+      <div class="btitle">Allow</div>
+      <div class="bsub">Prompt passes through · full agent capabilities</div>
+    </div>
+  </div>
+
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <!-- Agent -->
+  <div class="label">Enterprise agent (Aria)</div>
+  <div class="node">
+    <div class="title">LangChain ReAct — Groq Llama-3.3-70B</div>
+    <div class="sub">Max 5 tool iterations · role-aware prompt · tools: doc search, calculator, meeting summary, HR policy lookup</div>
+  </div>
+
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <!-- Output -->
+  <div class="label">Output</div>
+  <div class="node">
+    <div class="title">API response + audit log</div>
+    <div class="sub">Agent output · per-layer risk scores · tool call steps · routing decision · timings</div>
+  </div>
+
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <div class="end-pill">Pipeline complete</div>
+
+</div>
+
+</body>
+</html>
