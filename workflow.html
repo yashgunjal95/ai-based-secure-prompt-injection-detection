@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Secure Agent — LangGraph Workflow</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: #0f1117; color: #e2e8f0; min-height: 100vh; padding: 32px 24px 60px; }
+.wrap { max-width: 1100px; margin: 0 auto; }
+.header { text-align: center; margin-bottom: 32px; }
+.badge { display: inline-flex; align-items: center; gap: 6px; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: #38bdf8; text-transform: uppercase; border: 1px solid rgba(56,189,248,0.3); padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+.badge::before { content: '●'; font-size: 8px; color: #22c55e; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+h1 { font-size: 26px; font-weight: 700; color: #f8fafc; letter-spacing: -0.03em; margin-bottom: 4px; }
+h1 span { color: #38bdf8; }
+.subtitle { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #475569; }
+.tabs { display: flex; gap: 6px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
+.tab { padding: 7px 18px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid #1e293b; background: #0f1117; color: #64748b; transition: all 0.15s; }
+.tab.active { background: #1e3a5f; color: #38bdf8; border-color: rgba(56,189,248,0.4); }
+.tab:hover:not(.active) { background: #141c27; color: #94a3b8; }
+.panel { display: none; }
+.panel.active { display: block; }
+.card { background: #141c27; border: 1px solid #1e293b; border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+.card-title { font-size: 11px; font-weight: 600; color: #475569; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.card-title::after { content: ''; flex: 1; height: 1px; background: #1e293b; }
+.mermaid { display: flex; justify-content: center; overflow-x: auto; }
+.legend-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; margin-bottom: 16px; }
+.li { display: flex; align-items: flex-start; gap: 8px; padding: 9px 12px; border-radius: 8px; background: #0f1117; border: 1px solid #1e293b; }
+.lc { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; margin-top: 3px; }
+.ln { font-size: 11px; font-weight: 600; color: #e2e8f0; margin-bottom: 2px; }
+.ld { font-size: 10px; color: #475569; line-height: 1.4; }
+table { width: 100%; border-collapse: collapse; font-size: 11px; }
+th { background: #1e293b; color: #94a3b8; padding: 8px 12px; text-align: left; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.08em; border-bottom: 1px solid #334155; }
+td { padding: 8px 12px; border-bottom: 1px solid #1e293b; vertical-align: top; }
+tr:hover td { background: #141c27; }
+.mn { font-family: 'JetBrains Mono', monospace; color: #38bdf8; }
+.mt { font-family: 'JetBrains Mono', monospace; color: #a78bfa; }
+.mw { color: #34d399; font-size: 10px; }
+.md { color: #64748b; }
+.ef { color: #f472b6; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+.et { color: #34d399; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+.ec { color: #fb923c; font-size: 10px; }
+.code { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #fbbf24; }
+.badge-n { display:inline-block;padding:2px 6px;border-radius:3px;font-size:9px;font-weight:700;letter-spacing:.06em; }
+.bn { background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.2); }
+.bc { background:rgba(251,146,60,.12);color:#fb923c;border:1px solid rgba(251,146,60,.2); }
+.be { background:rgba(148,163,184,.1);color:#94a3b8;border:1px solid rgba(148,163,184,.2); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="header">
+  <div class="badge">LangGraph StateGraph · Compiled</div>
+  <h1>Secure Pipeline + <span>Enterprise Agent</span></h1>
+  <div class="subtitle">Exact node/edge mapping from graph.py + enterprise_graph.py</div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('pipeline',this)">🔐 Secure Pipeline Graph</div>
+  <div class="tab" onclick="showTab('enterprise',this)">🤖 Enterprise Agent Graph</div>
+  <div class="tab" onclick="showTab('combined',this)">🔗 Combined End-to-End</div>
+  <div class="tab" onclick="showTab('state',this)">📦 State &amp; Edges Reference</div>
+</div>
+
+<!-- TAB 1: PIPELINE -->
+<div class="panel active" id="panel-pipeline">
+  <div class="card">
+    <div class="card-title">SecurePipeline — graph.py — _build_graph()</div>
+    <div class="mermaid" id="m1"></div>
+  </div>
+  <div class="legend-grid">
+    <div class="li"><div class="lc" style="background:#22d3ee"></div><div><div class="ln">layer_1_scan</div><div class="ld">78 regex patterns · 9 attack categories · less than 1ms · no API</div></div></div>
+    <div class="li"><div class="lc" style="background:#a78bfa"></div><div><div class="ln">layer_2_scan</div><div class="ld">TF-IDF · sklearn · trained locally · probabilistic score</div></div></div>
+    <div class="li"><div class="lc" style="background:#fbbf24"></div><div><div class="ln">layer_3_scan</div><div class="ld">Groq LLM · semantic understanding · catches indirect injection</div></div></div>
+    <div class="li"><div class="lc" style="background:#f472b6"></div><div><div class="ln">decide</div><div class="ld">Weighted score + 4 override rules — ALLOW / SANITIZE / BLOCK</div></div></div>
+    <div class="li"><div class="lc" style="background:#f87171"></div><div><div class="ln">handle_block — END</div><div class="ld">Agent never called. Logged. User sees rejection.</div></div></div>
+    <div class="li"><div class="lc" style="background:#34d399"></div><div><div class="ln">run_agent</div><div class="ld">Uses final_prompt (sanitized or original) — LangChain ReAct</div></div></div>
+  </div>
+</div>
+
+<!-- TAB 2: ENTERPRISE -->
+<div class="panel" id="panel-enterprise">
+  <div class="card">
+    <div class="card-title">EnterpriseGraph — enterprise_graph.py — _build_graph()</div>
+    <div class="mermaid" id="m2"></div>
+  </div>
+</div>
+
+<!-- TAB 3: COMBINED -->
+<div class="panel" id="panel-combined">
+  <div class="card">
+    <div class="card-title">End-to-End — API Request through both LangGraph StateGraphs</div>
+    <div class="mermaid" id="m3"></div>
+  </div>
+</div>
+
+<!-- TAB 4: STATE -->
+<div class="panel" id="panel-state">
+  <div class="card">
+    <div class="card-title">PipelineState — Fields Written by Each Node</div>
+    <table>
+      <thead><tr><th>Field</th><th>Type</th><th>Written By</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="mn">original_prompt</td><td class="mt">str</td><td class="mw">START (input)</td><td class="md">Raw user input — never modified by any node</td></tr>
+        <tr><td class="mn">rule_result</td><td class="mt">RuleBasedResult</td><td class="mw">layer_1_scan</td><td class="md">risk_score · matches[] · categories_hit · severity</td></tr>
+        <tr><td class="mn">ml_result</td><td class="mt">MLClassifierResult</td><td class="mw">layer_2_scan</td><td class="md">confidence · predicted_label · risk_score</td></tr>
+        <tr><td class="mn">llm_result</td><td class="mt">LLMValidatorResult</td><td class="mw">layer_3_scan</td><td class="md">verdict · attack_type · risk_score · reasoning</td></tr>
+        <tr><td class="mn">decision_record</td><td class="mt">DecisionRecord</td><td class="mw">decide</td><td class="md">final_score · decision · overrides_fired · reasons</td></tr>
+        <tr><td class="mn">routing</td><td class="mt">str</td><td class="mw">decide</td><td class="md">"allow" | "sanitize" | "block"</td></tr>
+        <tr><td class="mn">final_prompt</td><td class="mt">str</td><td class="mw">handle_allow / handle_sanitize</td><td class="md">Prompt forwarded to agent — cleaned if sanitized</td></tr>
+        <tr><td class="mn">agent_response</td><td class="mt">AgentResponse</td><td class="mw">run_agent</td><td class="md">output · tool_calls · steps · execution_ms</td></tr>
+        <tr><td class="mn">completed</td><td class="mt">bool</td><td class="mw">handle_block / run_agent</td><td class="md">True when pipeline reaches terminal node</td></tr>
+        <tr><td class="mn">node_timings</td><td class="mt">dict[str, float]</td><td class="mw">Every node</td><td class="md">Execution time per node in milliseconds</td></tr>
+        <tr><td class="mn">errors</td><td class="mt">list[str]</td><td class="mw">Any node on exception</td><td class="md">Graceful collection — pipeline continues on error</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <div class="card-title">All Graph Edges — Exact Code</div>
+    <table>
+      <thead><tr><th>From</th><th>To</th><th>Type</th><th>Condition</th><th>Code</th></tr></thead>
+      <tbody>
+        <tr><td class="ef">START</td><td class="et">layer_1_scan</td><td><span class="badge-n bn">ENTRY</span></td><td>—</td><td class="code">set_entry_point("layer_1_scan")</td></tr>
+        <tr><td class="ef">layer_1_scan</td><td class="et">layer_2_scan</td><td><span class="badge-n bn">NORMAL</span></td><td>Always</td><td class="code">add_edge("layer_1_scan", "layer_2_scan")</td></tr>
+        <tr><td class="ef">layer_2_scan</td><td class="et">layer_3_scan</td><td><span class="badge-n bn">NORMAL</span></td><td>Always</td><td class="code">add_edge("layer_2_scan", "layer_3_scan")</td></tr>
+        <tr><td class="ef">layer_3_scan</td><td class="et">decide</td><td><span class="badge-n bn">NORMAL</span></td><td>Always</td><td class="code">add_edge("layer_3_scan", "decide")</td></tr>
+        <tr><td class="ef">decide</td><td class="et">handle_block</td><td><span class="badge-n bc">CONDITIONAL</span></td><td class="ec">routing == "block" (score 0.65+ or override)</td><td class="code">add_conditional_edges("decide", route_fn)</td></tr>
+        <tr><td class="ef">decide</td><td class="et">handle_sanitize</td><td><span class="badge-n bc">CONDITIONAL</span></td><td class="ec">routing == "sanitize" (0.40 to 0.65)</td><td class="code">add_conditional_edges("decide", route_fn)</td></tr>
+        <tr><td class="ef">decide</td><td class="et">handle_allow</td><td><span class="badge-n bc">CONDITIONAL</span></td><td class="ec">routing == "allow" (score below 0.40)</td><td class="code">add_conditional_edges("decide", route_fn)</td></tr>
+        <tr><td class="ef">handle_block</td><td class="et">END</td><td><span class="badge-n be">END</span></td><td>Agent skipped entirely</td><td class="code">add_edge("handle_block", END)</td></tr>
+        <tr><td class="ef">handle_sanitize</td><td class="et">run_agent</td><td><span class="badge-n bn">NORMAL</span></td><td>Cleaned prompt forwarded</td><td class="code">add_edge("handle_sanitize", "run_agent")</td></tr>
+        <tr><td class="ef">handle_allow</td><td class="et">run_agent</td><td><span class="badge-n bn">NORMAL</span></td><td>Original prompt forwarded</td><td class="code">add_edge("handle_allow", "run_agent")</td></tr>
+        <tr><td class="ef">run_agent</td><td class="et">END</td><td><span class="badge-n be">END</span></td><td>Always</td><td class="code">add_edge("run_agent", END)</td></tr>
+        <tr style="background:#0a1520"><td colspan="5" style="padding:6px 12px;font-family:'JetBrains Mono',monospace;font-size:9px;color:#334155;letter-spacing:.1em">ENTERPRISE GRAPH — enterprise_graph.py</td></tr>
+        <tr><td class="ef">START</td><td class="et">security_gate</td><td><span class="badge-n bn">ENTRY</span></td><td>Pipeline result injected as state</td><td class="code">set_entry_point("security_gate")</td></tr>
+        <tr><td class="ef">security_gate</td><td class="et">blocked</td><td><span class="badge-n bc">CONDITIONAL</span></td><td class="ec">blocked == True</td><td class="code">add_conditional_edges("security_gate", lambda)</td></tr>
+        <tr><td class="ef">security_gate</td><td class="et">run_agent</td><td><span class="badge-n bc">CONDITIONAL</span></td><td class="ec">blocked == False</td><td class="code">add_conditional_edges("security_gate", lambda)</td></tr>
+        <tr><td class="ef">run_agent</td><td class="et">END</td><td><span class="badge-n be">END</span></td><td>Always</td><td class="code">add_edge("run_agent", END)</td></tr>
+        <tr><td class="ef">blocked</td><td class="et">END</td><td><span class="badge-n be">END</span></td><td>Always</td><td class="code">add_edge("blocked", END)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</div>
+
+<script>
+const diagrams = {
+  m1: `flowchart TD
+    S(["START - raw user prompt"])
+    L1["layer_1_scan\nRuleBasedDetector.scan\n78 regex patterns, 9 categories\nwrites: rule_result"]
+    L2["layer_2_scan\nMLPromptClassifier.predict\nTF-IDF sklearn local model\nwrites: ml_result"]
+    L3["layer_3_scan\nLLMSemanticValidator.validate\nGroq llama-3.3-70b semantic\nwrites: llm_result"]
+    D["decide\nDecisionEngine.decide rule ml llm\nscore = L1x0.30 + L2x0.35 + L3x0.35\napply 4 override rules\nwrites: decision_record, routing"]
+    HB["handle_block\nrouting = block\nfinal_prompt = empty\ncompleted = True\nAGENT NEVER RUNS"]
+    HS["handle_sanitize\nrouting = sanitize\nfinal_prompt = sanitized version\nstrips injection phrases"]
+    HA["handle_allow\nrouting = allow\nfinal_prompt = original prompt\npasses through unchanged"]
+    A["run_agent\nSecureAgent.run final_prompt\nLangChain ReAct loop Groq LLM\nwrites: agent_response"]
+    EB(["END - blocked path"])
+    EA(["END - agent response"])
+
+    S --> L1
+    L1 -->|add_edge| L2
+    L2 -->|add_edge| L3
+    L3 -->|add_edge| D
+    D -->|"CONDITIONAL score 0.65 or override"| HB
+    D -->|"CONDITIONAL score 0.40 to 0.65"| HS
+    D -->|"CONDITIONAL score below 0.40"| HA
+    HB -->|add_edge END| EB
+    HS -->|add_edge| A
+    HA -->|add_edge| A
+    A -->|add_edge END| EA
+
+    style S   fill:#1e293b,stroke:#475569,color:#94a3b8
+    style L1  fill:#0c2231,stroke:#22d3ee,color:#cffafe
+    style L2  fill:#1a1040,stroke:#a78bfa,color:#ede9fe
+    style L3  fill:#201500,stroke:#fbbf24,color:#fef3c7
+    style D   fill:#1a0f24,stroke:#f472b6,color:#fce7f3
+    style HB  fill:#1f0909,stroke:#f87171,color:#fee2e2
+    style HS  fill:#1a1100,stroke:#fbbf24,color:#fef9c3
+    style HA  fill:#071a10,stroke:#34d399,color:#d1fae5
+    style A   fill:#071a12,stroke:#34d399,color:#d1fae5
+    style EB  fill:#1e293b,stroke:#475569,color:#94a3b8
+    style EA  fill:#1e293b,stroke:#475569,color:#94a3b8`,
+
+  m2: `flowchart TD
+    IN(["START - Pipeline result injected\nsecurity_routing, score, reasons\nlayer_scores, sanitized_prompt"])
+    SG["security_gate\nChecks security_routing from SecurePipeline\nIf routing is block then\n  blocked = True\n  final_output = warning message\nAGENT NEVER CALLED when blocked"]
+    BL["blocked\nPass-through node\nfinal_output set by security_gate"]
+    RA["run_agent\nPrompt = sanitized_prompt if SANITIZE\nPrompt = original_prompt if ALLOW\nEnterpriseAgent.run effective_prompt\nLangChain ReAct + Groq llama-3.3-70b\nFallback to mock on error"]
+    TL["Tool Belt - 4 tools\ninternal_doc_search - 12 company docs\nenterprise_calculator - GST and CI\nmeeting_summary - decisions and actions\nhr_policy_lookup - 8 HR policies"]
+    OA(["END - response\nEnterpriseState.final_output\ntool_calls, steps, timings"])
+    OB(["END - blocked\nSecurity warning returned\nAgent never ran"])
+
+    IN --> SG
+    SG -->|"CONDITIONAL blocked = True"| BL
+    SG -->|"CONDITIONAL blocked = False"| RA
+    RA --> TL
+    TL -->|add_edge END| OA
+    BL -->|add_edge END| OB
+
+    style IN  fill:#1e293b,stroke:#475569,color:#94a3b8
+    style SG  fill:#0c1f35,stroke:#60a5fa,color:#bfdbfe
+    style BL  fill:#1f0909,stroke:#f87171,color:#fee2e2
+    style RA  fill:#071a12,stroke:#34d399,color:#d1fae5
+    style TL  fill:#0a1a24,stroke:#22d3ee,color:#cffafe
+    style OA  fill:#1e293b,stroke:#475569,color:#94a3b8
+    style OB  fill:#1e293b,stroke:#475569,color:#94a3b8`,
+
+  m3: `flowchart TD
+    USER(["POST /api/v1/enterprise/chat\nprompt and session_id"])
+
+    subgraph PL ["SecurePipeline - graph.py - LangGraph StateGraph"]
+      direction LR
+      N1["layer_1_scan\nRule Engine\n78 regex"]
+      N2["layer_2_scan\nML Classifier\nTF-IDF"]
+      N3["layer_3_scan\nLLM Validator\nGroq"]
+      N4["decide\nWeighted Score\nOverride Rules"]
+      N1 --> N2 --> N3 --> N4
+    end
+
+    BPATH["handle_block\nSecurity rejection\nAGENT NEVER RUNS"]
+
+    subgraph EG ["EnterpriseGraph - enterprise_graph.py - LangGraph StateGraph"]
+      direction TB
+      GN["security_gate\nEnforces pipeline decision\nPipeline routing passed in"]
+      AN["run_agent - Aria\nLangChain ReAct + Groq\nmock fallback on error"]
+      TN["Tool Belt\ninternal_doc_search\nenterprise_calculator\nmeeting_summary\nhr_policy_lookup"]
+      GN -->|not blocked| AN
+      AN --> TN
+    end
+
+    RESP(["EnterpriseChatResponse\noutput, security scores\ntool_calls, timings"])
+
+    USER --> PL
+    N4 -->|routing = block| BPATH
+    N4 -->|routing = allow or sanitize| EG
+    EG --> RESP
+
+    style USER fill:#1e293b,stroke:#60a5fa,color:#bfdbfe
+    style N1   fill:#0c2231,stroke:#22d3ee,color:#cffafe
+    style N2   fill:#1a1040,stroke:#a78bfa,color:#ede9fe
+    style N3   fill:#201500,stroke:#fbbf24,color:#fef3c7
+    style N4   fill:#1a0f24,stroke:#f472b6,color:#fce7f3
+    style BPATH fill:#1f0909,stroke:#f87171,color:#fee2e2
+    style GN   fill:#0c1f35,stroke:#60a5fa,color:#bfdbfe
+    style AN   fill:#071a12,stroke:#34d399,color:#d1fae5
+    style TN   fill:#0a1a24,stroke:#22d3ee,color:#cffafe
+    style RESP fill:#1e293b,stroke:#60a5fa,color:#bfdbfe`
+};
+
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'dark',
+  themeVariables: {
+    darkMode: true,
+    background: '#0f1117',
+    mainBkg: '#141c27',
+    nodeBorder: '#334155',
+    lineColor: '#475569',
+    nodeTextColor: '#e2e8f0',
+    edgeLabelBackground: '#1e293b',
+    fontSize: '13px'
+  },
+  flowchart: { htmlLabels: false, curve: 'basis', padding: 20 }
+});
+
+async function renderAll() {
+  for (const [id, code] of Object.entries(diagrams)) {
+    const el = document.getElementById(id);
+    if (el) {
+      try {
+        const { svg } = await mermaid.render('svg_' + id, code);
+        el.innerHTML = svg;
+      } catch(e) {
+        el.innerHTML = '<div style="color:#f87171;padding:20px;font-family:monospace;font-size:12px">Render error: ' + e.message + '</div>';
+      }
+    }
+  }
+}
+
+renderAll();
+
+function showTab(name, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  el.classList.add('active');
+}
+</script>
+</body>
+</html>

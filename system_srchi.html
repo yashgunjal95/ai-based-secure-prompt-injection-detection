@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Architecture — IEEE Format</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #fff;
+  font-family: 'DM Sans', sans-serif;
+  color: #111;
+  padding: 36px 28px 52px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* FIGURE CAPTION */
+.fig-cap {
+  font-size: 10.5px;
+  text-align: center;
+  color: #333;
+  margin-bottom: 22px;
+  font-style: italic;
+  line-height: 1.55;
+}
+.fig-cap b { font-style: normal; }
+
+/* MAIN COLUMN */
+.flow { display: flex; flex-direction: column; align-items: center; }
+
+/* SECTION HEADER */
+.sh {
+  width: 100%;
+  background: #1a1a1a;
+  color: #fff;
+  font-size: 7.5px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 3px 3px 0 0;
+}
+.sh-gray {
+  width: 100%;
+  background: #555;
+  color: #fff;
+  font-size: 7.5px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 3px 3px 0 0;
+}
+
+/* SECTION BODY */
+.sb {
+  width: 100%;
+  border: 1.5px solid #ccc;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  padding: 12px 11px;
+  background: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* GAP BETWEEN SECTIONS = arrow area */
+.gap { display: flex; flex-direction: column; align-items: center; }
+.line-v { width: 1.5px; background: #555; }
+.head-v {
+  width: 0; height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 7px solid #555;
+}
+.arr-label-v {
+  font-size: 7.5px; color: #555; font-style: italic;
+  margin-top: 1px; margin-bottom: 1px;
+}
+
+/* NODE STYLES */
+.nd {
+  border: 1.5px solid;
+  border-radius: 4px;
+  padding: 8px 12px;
+  text-align: center;
+  width: 100%;
+}
+.nd.dark  { background: #1a1a1a; border-color: #1a1a1a; }
+.nd.dark  .t { color: #fff; } .nd.dark  .s { color: #aaa; }
+.nd.mid   { background: #333; border-color: #333; }
+.nd.mid   .t { color: #fff; } .nd.mid   .s { color: #ccc; }
+.nd.light { background: #fff; border-color: #bbb; }
+.nd.light .t { color: #111; } .nd.light .s { color: #555; }
+.nd.l1    { background: #fff; border-color: #0e7490; border-left-width: 4px; }
+.nd.l1    .t { color: #0e7490; }
+.nd.l2    { background: #fff; border-color: #6d28d9; border-left-width: 4px; }
+.nd.l2    .t { color: #6d28d9; }
+.nd.l3    { background: #fff; border-color: #b45309; border-left-width: 4px; }
+.nd.l3    .t { color: #b45309; }
+.nd.de    { background: #fff; border-color: #be185d; border-left-width: 4px; }
+.nd.de    .t { color: #be185d; }
+.nd.bl    { background: #fff1f2; border-color: #dc2626; }
+.nd.bl    .t { color: #dc2626; }
+.nd.sa    { background: #fffbeb; border-color: #d97706; }
+.nd.sa    .t { color: #92400e; }
+.nd.al    { background: #f0fdf4; border-color: #15803d; }
+.nd.al    .t { color: #15803d; }
+.nd.ag    { background: #eff6ff; border-color: #1d4ed8; border-left-width: 4px; }
+.nd.ag    .t { color: #1d4ed8; }
+
+.t  { font-size: 11px; font-weight: 700; line-height: 1.25; margin-bottom: 2px; }
+.s  { font-size: 8.5px; color: #555; line-height: 1.45; }
+.tg {
+  display: inline-block; font-size: 7.5px; font-weight: 700;
+  font-family: 'JetBrains Mono', monospace; letter-spacing: 0.06em;
+  padding: 1px 6px; border-radius: 2px; margin-bottom: 3px;
+}
+
+/* DIAMOND */
+.diamond-outer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+.diam {
+  width: 140px;
+  height: 60px;
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  background: #fff;
+  border: 0;
+  outline: 1.5px solid #444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 0 0 1.5px #444;
+}
+.diam-inner {
+  font-size: 10px;
+  font-weight: 700;
+  color: #111;
+  text-align: center;
+  line-height: 1.3;
+  z-index: 1;
+}
+.diam-lbl-l {
+  position: absolute; left: 0; top: 50%;
+  transform: translateY(-50%);
+  font-size: 7.5px; color: #dc2626; font-weight: 700; font-style: italic;
+}
+.diam-lbl-r {
+  position: absolute; right: 0; top: 50%;
+  transform: translateY(-50%);
+  font-size: 7.5px; color: #15803d; font-weight: 700; font-style: italic;
+}
+.diam-lbl-b {
+  font-size: 7.5px; color: #92400e; font-weight: 700; font-style: italic;
+  margin-top: 2px;
+}
+
+/* SPLIT GRID */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; width: 100%; }
+
+/* FORMULA */
+.formula {
+  width: 100%;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 7px 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  color: #222;
+  text-align: center;
+}
+.fl1 { color: #0e7490; font-weight: 700; }
+.fl2 { color: #6d28d9; font-weight: 700; }
+.fl3 { color: #b45309; font-weight: 700; }
+
+/* OVERRIDE GRID */
+.og { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; width: 100%; margin-top: 8px; }
+.oi {
+  background: #fff; border: 1px solid #e5e7eb;
+  border-left: 3px solid #be185d; border-radius: 3px;
+  padding: 5px 7px; font-size: 8px; color: #374151; line-height: 1.4;
+}
+.oi b { color: #be185d; }
+
+/* THRESHOLD */
+.thr { display: flex; gap: 5px; width: 100%; margin-top: 8px; }
+.thi {
+  flex: 1; border-radius: 3px; padding: 5px 4px;
+  text-align: center; font-size: 8.5px; font-weight: 700; border: 1px solid;
+}
+
+/* TOOL GRID */
+.tg2 { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; width: 100%; margin-top: 8px; }
+.ti {
+  background: #fff; border: 1px solid #a5f3fc;
+  border-radius: 3px; padding: 5px 7px;
+  font-size: 8px; color: #0e7490; font-weight: 600; line-height: 1.4;
+}
+.ti span { color: #374151; font-weight: 400; display: block; }
+
+/* END PILL */
+.end-pill {
+  background: #1a1a1a; border-radius: 50px;
+  padding: 10px 32px; text-align: center;
+}
+.end-pill .t { color: #fff; font-size: 12px; letter-spacing: 0.04em; }
+
+/* LEGEND */
+.legend {
+  margin-top: 24px; padding-top: 14px;
+  border-top: 1px solid #ddd;
+  display: flex; flex-wrap: wrap; gap: 9px; justify-content: center;
+}
+.leg-i { display: flex; align-items: center; gap: 5px; font-size: 8.5px; color: #444; }
+.leg-d { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+/* side note for feedback loop */
+.fnote {
+  font-size: 7.5px; color: #555; font-style: italic; text-align: center;
+  border: 1px dashed #bbb; border-radius: 3px;
+  padding: 2px 8px; margin-top: 4px;
+}
+
+.sp4  { height: 4px; }
+.sp6  { height: 6px; }
+.sp8  { height: 8px; }
+.sp10 { height: 10px; }
+.w100 { width: 100%; }
+</style>
+</head>
+<body>
+
+<div class="fig-cap">
+  <b>Fig. 1.</b> System Architecture — AI-Based Secure Prompt Injection Detection System with Enterprise LLM Agent.<br>
+  The three-layer security firewall is implemented as a LangGraph StateGraph and enforces gating before agent execution.
+</div>
+
+<div class="flow">
+
+  <!-- ═══════════════════════════ INPUT ═══════════════════════════ -->
+  <div class="sh" style="border-radius:3px 3px 0 0">Input Layer</div>
+  <div class="sb">
+    <div class="nd dark" style="min-width:180px; padding:10px 16px">
+      <div class="t">User Prompt</div>
+      <div class="s">Raw unverified text from employee or user</div>
+    </div>
+  </div>
+
+  <div class="gap">
+    <div class="line-v" style="height:16px"></div>
+    <div class="head-v"></div>
+  </div>
+
+  <!-- ═══════════════════════════ LAYER 1 ═══════════════════════════ -->
+  <div class="sh">② Layer 1 — Rule-Based Detection (Weight: 0.30)</div>
+  <div class="sb">
+    <div class="nd l1">
+      <div class="tg" style="background:#ecfeff; color:#0e7490">RuleBasedDetector.scan(prompt)</div>
+      <div class="t">Rule-Based Scanner</div>
+      <div class="s">78 compiled regex patterns · 9 attack categories<br>
+      Severity levels: CRITICAL / HIGH / MEDIUM / LOW<br>
+      Executes in &lt; 1 ms · No external API · Zero cost</div>
+    </div>
+    <div class="sp6"></div>
+    <div style="display:flex; gap:5px; width:100%">
+      <div style="flex:1; background:#fff; border:1px solid #a5f3fc; border-radius:3px; padding:4px 7px; font-size:8px; color:#0e7490; font-weight:600">CRITICAL match → score 1.0</div>
+      <div style="flex:1; background:#fff; border:1px solid #a5f3fc; border-radius:3px; padding:4px 7px; font-size:8px; color:#0e7490; font-weight:600">HIGH → 0.85 · MEDIUM → 0.65</div>
+    </div>
+  </div>
+
+  <div class="gap">
+    <div class="line-v" style="height:16px"></div>
+    <div class="head-v"></div>
+  </div>
+
+  <!-- ═══════════════════════════ LAYER 2 ═══════════════════════════ -->
+  <div class="sh">③ Layer 2 — ML Classification (Weight: 0.35)</div>
+  <div class="sb">
+    <div class="nd l2">
+      <div class="tg" style="background:#f5f3ff; color:#6d28d9">MLPromptClassifier.predict(prompt)</div>
+      <div class="t">TF-IDF + Logistic Regression Pipeline</div>
+      <div class="s">TF-IDF Vectorizer: n-gram range (1–3), max features = 8,000, sublinear_tf = True<br>
+      Logistic Regression: C = 1.0, class_weight = balanced, max_iter = 1000<br>
+      Output: injection probability score 0.0 – 1.0 · Latency: 3–8 ms · Local model</div>
+    </div>
+  </div>
+
+  <div class="gap">
+    <div class="line-v" style="height:16px"></div>
+    <div class="head-v"></div>
+  </div>
+
+  <!-- ═══════════════════════════ LAYER 3 ═══════════════════════════ -->
+  <div class="sh">④ Layer 3 — LLM Semantic Validation (Weight: 0.35)</div>
+  <div class="sb">
+    <div class="nd l3">
+      <div class="tg" style="background:#fffbeb; color:#b45309">LLMSemanticValidator.validate(prompt)</div>
+      <div class="t">LLM Semantic Validator</div>
+      <div class="s">Model: Groq Llama-3.3-70B Versatile · Zero-shot chain-of-thought prompting<br>
+      Returns: verdict (safe / suspicious / malicious), risk_score, attack_type, reasoning<br>
+      Fail-safe policy: on error → risk_score = 0.5, recommendation = sanitize</div>
+    </div>
+  </div>
+
+  <div class="gap">
+    <div class="line-v" style="height:16px"></div>
+    <div class="head-v"></div>
+  </div>
+
+  <!-- ═══════════════════════════ DECISION ENGINE ═══════════════════════════ -->
+  <div class="sh">⑤ Decision Engine — Score Aggregation &amp; Routing</div>
+  <div class="sb">
+
+    <div class="formula">
+      Final Score = <span class="fl1">L1 × 0.30</span> + <span class="fl2">L2 × 0.35</span> + <span class="fl3">L3 × 0.35</span> → Apply Override Rules → Route
+    </div>
+
+    <div class="og">
+      <div class="oi"><b>OR-1 Catastrophic Signal</b><br>Any single layer ≥ 0.95 → floor score at 0.95</div>
+      <div class="oi"><b>OR-2 Critical Rule Escalation</b><br>L1 = CRITICAL severity → final score = 1.0</div>
+      <div class="oi"><b>OR-3 Unanimous Detection</b><br>All three layers &gt; 0.55 → routing = BLOCK</div>
+      <div class="oi"><b>OR-4 LLM Malicious Verdict</b><br>LLM verdict = malicious → floor score at 0.65</div>
+    </div>
+
+    <div class="thr">
+      <div class="thi" style="background:#fff1f2; border-color:#fecaca; color:#dc2626">🚫 BLOCK<br><span style="font-weight:400; font-size:7.5px">Score ≥ 0.65</span></div>
+      <div class="thi" style="background:#fffbeb; border-color:#fde68a; color:#92400e">🧹 SANITIZE<br><span style="font-weight:400; font-size:7.5px">0.40 – 0.65</span></div>
+      <div class="thi" style="background:#f0fdf4; border-color:#bbf7d0; color:#15803d">✅ ALLOW<br><span style="font-weight:400; font-size:7.5px">Score &lt; 0.40</span></div>
+    </div>
+
+  </div>
+
+  <div class="gap">
+    <div class="line-v" style="height:14px"></div>
+    <div class="head-v"></div>
+  </div>
+
+  <!-- ═══════════════════════════ DIAMOND ═══════════════════════════ -->
+  <div class="diamond-outer" style="margin-bottom:0">
+    <div class="diam">
+      <div class="diam-inner">Routing<br>Decision?</div>
+    </div>
+    <div class="diam-lbl-l" style="left:10px">≥ 0.65<br>BLOCK</div>
+    <div class="diam-lbl-r" style="right:10px">&lt; 0.40<br>ALLOW</div>
+    <div class="diam-lbl-b">0.40 – 0.65 → SANITIZE ↓</div>
+  </div>
+
+  <div class="gap">
+    <div class="line-v" style="height:12px"></div>
+    <div class="head-v"></div>
+  </div>
+
+  <!-- ═══════════════════════════ ROUTING HANDLERS ═══════════════════════════ -->
+  <div class="sh">⑥ Routing Handlers — LangGraph Conditional Edges</div>
+  <div class="sb">
+    <div class="g3">
+
+      <div style="display:flex; flex-direction:column; gap:5px">
+        <div style="text-align:center">
+          <div style="width:1.5px; height:10px; background:#dc2626; margin:0 auto"></div>
+          <div style="width:0; height:0; border-left:4px solid transparent; border-right:4px solid transparent; border-top:6px solid #dc2626; margin:0 auto"></div>
+        </div>
+        <div class="nd bl" style="text-align:left; padding:7px 9px">
+          <div class="t" style="font-size:10px">handle_block</div>
+          <div class="s" style="font-size:8px; color:#555">• Agent skipped entirely<br>• Rejection msg returned<br>• Incident audit-logged<br>• Pipeline → END</div>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:5px">
+        <div style="text-align:center">
+          <div style="width:1.5px; height:10px; background:#d97706; margin:0 auto"></div>
+          <div style="width:0; height:0; border-left:4px solid transparent; border-right:4px solid transparent; border-top:6px solid #d97706; margin:0 auto"></div>
+        </div>
+        <div class="nd sa" style="text-align:left; padding:7px 9px">
+          <div class="t" style="font-size:10px">handle_sanitize</div>
+          <div class="s" style="font-size:8px; color:#555">• Strips override phrases<br>• Removes [INST] tokens<br>• Cleans &lt;SYS&gt; delimiters<br>• Cleaned prompt → agent</div>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:5px">
+        <div style="text-align:center">
+          <div style="width:1.5px; height:10px; background:#15803d; margin:0 auto"></div>
+          <div style="width:0; height:0; border-left:4px solid transparent; border-right:4px solid transparent; border-top:6px solid #15803d; margin:0 auto"></div>
+        </div>
+        <div class="nd al" style="text-align:left; padding:7px 9px">
+          <div class="t" style="font-size:10px">handle_allow</div>
+          <div class="s" style="font-size:8px; color:#555">• Prompt passes through<br>• Original → agent node<br>• All 4 tools available<br>• Full capabilities</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="gap">
+    <div class="line-v" style="height:16px"></div>
+    <div class="head-v"></div>
+  </div>
+
+  <!-- ═══════════════════════════ SECURITY GATE ═══════════════════════════ -->
+  <div class="sh">⑦ Enterprise Agent Graph — Security Gate Node</div>
+  <div class="sb">
+    <div class="nd ag">
+      <div class="tg" style="background:#eff6ff; color:#1d4ed8">EnterpriseGraph — security_gate</div>
+      <div class="t">Security Gate Enforcement</div>
+      <div class="s">Reads pipeline routing from PipelineState injected as graph state<br>
+      If routing = block → blocked = True → agent node never invoked → END<br>
+      If routing = allow or sanitize → run_agent node is invoked with final_prompt</div>
+    </div>
+  </div>
+
+  <div class="gap">
+    <div class="line-v" style="height:16px"></div>
+    <div class="head-v"></div>
+  </div>
+
+  <!-- ═══════════════════════════ ENTERPRISE AGENT ═══════════════════════════ -->
+  <div class="sh">⑧ Enterprise AI Agent — Aria (LangChain ReAct)</div>
+  <div class="sb">
+
+    <div class="nd ag">
+      <div class="t">run_agent — ReAct Agent Loop</div>
+      <div class="s">Framework: LangChain ReAct (Reasoning + Acting) · Model: Groq Llama-3.3-70B<br>
+      Max 5 tool-calling iterations · Role-aware prompt (5 employee role contexts)<br>
+      Graceful fallback: mock mode on Groq rate-limit or API error</div>
+    </div>
+
+    <div class="sp8"></div>
+    <div style="font-size:8px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#555; text-align:center">Registered Tool Belt</div>
+
+    <div class="tg2">
+      <div class="ti">📄 internal_doc_search<span>12 company documents · TF-IDF keyword scoring</span></div>
+      <div class="ti">🧮 enterprise_calculator<span>AST-safe · GST · compound interest · budget</span></div>
+      <div class="ti">📝 meeting_summary<span>Extract decisions · action items · attendees</span></div>
+      <div class="ti">📋 hr_policy_lookup<span>8 HR policies · keyword-to-policy mapping</span></div>
+    </div>
+
+  </div>
+
+  <div class="gap">
+    <div class="line-v" style="height:16px"></div>
+    <div class="head-v"></div>
+  </div>
+
+  <!-- ═══════════════════════════ OUTPUT ═══════════════════════════ -->
+  <div class="sh">⑨ Output Layer — API Response &amp; Audit</div>
+  <div class="sb">
+    <div class="g2">
+      <div class="nd light" style="text-align:left; padding:8px 10px">
+        <div class="t" style="font-size:10px">📤 API Response</div>
+        <div class="s" style="font-size:8px">• Agent output text<br>• Per-layer risk scores<br>• Tool calls + steps<br>• Node execution timings</div>
+      </div>
+      <div class="nd light" style="text-align:left; padding:8px 10px">
+        <div class="t" style="font-size:10px">🗂️ Audit Log</div>
+        <div class="s" style="font-size:8px">• decision_id · timestamp<br>• Weighted + final score<br>• Override rules fired<br>• Routing decision record</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gap">
+    <div class="line-v" style="height:16px"></div>
+    <div class="head-v"></div>
+  </div>
+
+  <!-- ═══════════════════════════ END ═══════════════════════════ -->
+  <div class="end-pill">
+    <div class="t">Pipeline Complete</div>
+  </div>
+
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+  <div style="width:100%; text-align:center; font-size:8px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#777; margin-bottom:4px">Legend</div>
+  <div class="leg-i"><div class="leg-d" style="background:#0e7490"></div>Layer 1 · Rule Engine</div>
+  <div class="leg-i"><div class="leg-d" style="background:#6d28d9"></div>Layer 2 · ML Classifier</div>
+  <div class="leg-i"><div class="leg-d" style="background:#b45309"></div>Layer 3 · LLM Validator</div>
+  <div class="leg-i"><div class="leg-d" style="background:#be185d"></div>Decision Engine</div>
+  <div class="leg-i"><div class="leg-d" style="background:#dc2626"></div>BLOCK Path</div>
+  <div class="leg-i"><div class="leg-d" style="background:#d97706"></div>SANITIZE Path</div>
+  <div class="leg-i"><div class="leg-d" style="background:#15803d"></div>ALLOW → Agent</div>
+  <div class="leg-i"><div class="leg-d" style="background:#1d4ed8"></div>Enterprise Agent (Aria)</div>
+</div>
+
+</body>
+</html>

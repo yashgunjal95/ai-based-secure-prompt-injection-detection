@@ -1,0 +1,49 @@
+# ============================================================
+# AI-Based Secure Prompt Injection Detection System
+# requirements.txt — pinned for reproducibility
+# ============================================================
+
+# --- Core API Framework ---
+fastapi==0.111.0
+uvicorn[standard]==0.30.1
+python-multipart==0.0.9
+pydantic>=2.7.4,<3
+pydantic-settings==2.3.0
+
+# --- LLM & Agent Framework ---
+# --- LLM & Agent Framework ---
+langchain-core>=0.2.22,<0.3
+langchain-community==0.2.6
+langchain-groq==0.1.6
+langgraph==0.1.19
+
+# --- Groq LLM Client ---
+groq==0.9.0
+
+# --- ML / Transformer Classifier ---
+torch==2.3.1
+transformers==4.41.2
+datasets==2.20.0
+scikit-learn==1.5.0
+numpy==1.26.4
+accelerate==0.31.0
+
+# --- Security & Text Processing ---
+regex==2024.5.15
+python-dotenv==1.0.1
+
+# --- Logging & Monitoring ---
+loguru==0.7.2
+rich==13.7.1
+
+# --- HTTP Client (for tools) ---
+httpx==0.27.0
+
+# --- Testing ---
+pytest==8.2.2
+pytest-asyncio==0.23.7
+httpx==0.27.0
+
+# --- Utilities ---
+tenacity==8.3.0
+python-jose==3.3.0

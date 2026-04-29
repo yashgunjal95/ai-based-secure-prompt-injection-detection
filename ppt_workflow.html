@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workflows for PPT</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: #ffffff; padding: 48px 40px; color: #1e293b; }
+
+.section { margin-bottom: 64px; }
+.section-title { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #94a3b8; margin-bottom: 24px; }
+
+.flow { display: flex; align-items: center; gap: 0; }
+
+.node { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 14px; border-radius: 10px; text-align: center; flex-shrink: 0; min-width: 120px; }
+.node .icon { font-size: 20px; margin-bottom: 5px; line-height: 1; }
+.node .label { font-size: 11px; font-weight: 700; color: #1e293b; line-height: 1.3; margin-bottom: 2px; }
+.node .sub { font-size: 9px; color: #64748b; line-height: 1.4; }
+
+.arrow { display: flex; align-items: center; flex-shrink: 0; }
+.al { width: 28px; height: 2px; }
+.ah { width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; }
+
+.branch-wrap { display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
+.branch-row { display: flex; align-items: center; }
+.branch-tag { font-size: 9px; font-weight: 700; padding: 3px 8px; border-radius: 4px; white-space: nowrap; margin-right: 8px; letter-spacing: 0.04em; }
+
+.pill { display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 50px; padding: 12px 20px; text-align: center; font-size: 10px; font-weight: 700; flex-shrink: 0; gap: 3px; }
+.pill .icon { font-size: 18px; }
+
+.sg { border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 14px 16px; background: #f8fafc; flex-shrink: 0; }
+.sg-label { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #94a3b8; margin-bottom: 10px; }
+
+.formula-row { display: flex; align-items: center; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+.formula-box { background: #f8fafc; border-radius: 8px; padding: 8px 16px; font-size: 11.5px; font-weight: 600; color: #1e293b; border: 1px solid #e2e8f0; }
+
+/* Node colors */
+.n-user   { background: #eff6ff; border: 1.5px solid #3b82f6; }
+.n-l1     { background: #ecfeff; border: 1.5px solid #06b6d4; }
+.n-l2     { background: #f5f3ff; border: 1.5px solid #8b5cf6; }
+.n-l3     { background: #fffbeb; border: 1.5px solid #f59e0b; }
+.n-decide { background: #fdf4ff; border: 1.5px solid #d946ef; }
+.n-block  { background: #fff1f2; border: 1.5px solid #f43f5e; }
+.n-san    { background: #fffbeb; border: 1.5px solid #f59e0b; }
+.n-allow  { background: #f0fdf4; border: 1.5px solid #22c55e; }
+.n-agent  { background: #f0fdf4; border: 1.5px solid #16a34a; }
+.n-gate   { background: #eff6ff; border: 1.5px solid #3b82f6; }
+.n-tools  { background: #ecfeff; border: 1.5px solid #06b6d4; }
+
+/* Arrow colors */
+.c-cyan   { background: #06b6d4; } .h-cyan   { border-left-color: #06b6d4; }
+.c-purple { background: #8b5cf6; } .h-purple { border-left-color: #8b5cf6; }
+.c-amber  { background: #f59e0b; } .h-amber  { border-left-color: #f59e0b; }
+.c-pink   { background: #d946ef; } .h-pink   { border-left-color: #d946ef; }
+.c-red    { background: #f43f5e; } .h-red    { border-left-color: #f43f5e; }
+.c-green  { background: #22c55e; } .h-green  { border-left-color: #22c55e; }
+.c-blue   { background: #3b82f6; } .h-blue   { border-left-color: #3b82f6; }
+.c-gray   { background: #cbd5e1; } .h-gray   { border-left-color: #cbd5e1; }
+
+/* Branch tags */
+.tag-block { background: #fff1f2; color: #f43f5e; border: 1px solid #fda4af; }
+.tag-san   { background: #fffbeb; color: #d97706; border: 1px solid #fcd34d; }
+.tag-allow { background: #f0fdf4; color: #16a34a; border: 1px solid #86efac; }
+.tag-t     { background: #fff1f2; color: #f43f5e; border: 1px solid #fda4af; }
+.tag-f     { background: #f0fdf4; color: #16a34a; border: 1px solid #86efac; }
+
+hr { border: none; border-top: 1px solid #f1f5f9; margin-bottom: 64px; }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════ -->
+<!-- DIAGRAM 1: SECURE PIPELINE             -->
+<!-- ════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Diagram 1 — Secure Pipeline (graph.py)</div>
+  <div class="flow">
+
+    <div class="pill n-user"><span class="icon">👤</span><span>User Prompt</span></div>
+
+    <div class="arrow"><div class="al c-cyan"></div><div class="ah h-cyan"></div></div>
+
+    <div class="node n-l1">
+      <div class="icon">📋</div>
+      <div class="label">layer_1_scan</div>
+      <div class="sub">Rule Engine<br>78 Regex · 9 Categories</div>
+    </div>
+
+    <div class="arrow"><div class="al c-purple"></div><div class="ah h-purple"></div></div>
+
+    <div class="node n-l2">
+      <div class="icon">🧠</div>
+      <div class="label">layer_2_scan</div>
+      <div class="sub">ML Classifier<br>TF-IDF + Logistic Reg.</div>
+    </div>
+
+    <div class="arrow"><div class="al c-amber"></div><div class="ah h-amber"></div></div>
+
+    <div class="node n-l3">
+      <div class="icon">🤖</div>
+      <div class="label">layer_3_scan</div>
+      <div class="sub">LLM Validator<br>Groq Llama-3.3-70b</div>
+    </div>
+
+    <div class="arrow"><div class="al c-pink"></div><div class="ah h-pink"></div></div>
+
+    <div class="node n-decide" style="min-width:130px">
+      <div class="icon">⚖️</div>
+      <div class="label">decide</div>
+      <div class="sub">Weighted Score<br>+ Override Rules</div>
+    </div>
+
+    <div class="al c-gray" style="width:20px; height:2px; flex-shrink:0"></div>
+
+    <div class="branch-wrap">
+      <div class="branch-row">
+        <span class="branch-tag tag-block">BLOCK ≥ 0.65</span>
+        <div class="al c-red" style="width:18px; height:2px"></div>
+        <div class="ah h-red"></div>
+        <div class="node n-block" style="margin-left:6px; min-width:115px">
+          <div class="icon">🚫</div>
+          <div class="label">handle_block</div>
+          <div class="sub">Agent never runs → END</div>
+        </div>
+      </div>
+      <div class="branch-row">
+        <span class="branch-tag tag-san">SANITIZE 0.40 – 0.65</span>
+        <div class="al c-amber" style="width:18px; height:2px"></div>
+        <div class="ah h-amber"></div>
+        <div class="node n-san" style="margin-left:6px; min-width:115px">
+          <div class="icon">🧹</div>
+          <div class="label">handle_sanitize</div>
+          <div class="sub">Clean prompt → agent</div>
+        </div>
+      </div>
+      <div class="branch-row">
+        <span class="branch-tag tag-allow">ALLOW &lt; 0.40</span>
+        <div class="al c-green" style="width:18px; height:2px"></div>
+        <div class="ah h-green"></div>
+        <div class="node n-allow" style="margin-left:6px; min-width:115px">
+          <div class="icon">✅</div>
+          <div class="label">handle_allow</div>
+          <div class="sub">Pass through → agent</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow"><div class="al c-green"></div><div class="ah h-green"></div></div>
+
+    <div class="node n-agent" style="min-width:120px">
+      <div class="icon">⚡</div>
+      <div class="label">run_agent</div>
+      <div class="sub">LangChain ReAct<br>Groq · 4 Tools</div>
+    </div>
+
+    <div class="arrow"><div class="al c-green"></div><div class="ah h-green"></div></div>
+
+    <div class="pill n-agent"><span class="icon">📤</span><span>Response</span></div>
+
+  </div>
+
+  <div class="formula-row">
+    <div class="formula-box">Score = L1 × 0.30 + L2 × 0.35 + L3 × 0.35</div>
+    <div class="formula-box" style="color:#64748b; font-weight:500; font-size:10.5px">4 Override Rules applied after weighted score</div>
+  </div>
+</div>
+
+<hr>
+
+<!-- ════════════════════════════════════════ -->
+<!-- DIAGRAM 2: ENTERPRISE AGENT GRAPH      -->
+<!-- ════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Diagram 2 — Enterprise Agent Graph (enterprise_graph.py)</div>
+  <div class="flow">
+
+    <div class="pill n-gate"><span class="icon">🔐</span><span>Pipeline<br>Result In</span></div>
+
+    <div class="arrow"><div class="al c-blue"></div><div class="ah h-blue"></div></div>
+
+    <div class="node n-gate" style="min-width:138px">
+      <div class="icon">🛡️</div>
+      <div class="label">security_gate</div>
+      <div class="sub">Reads pipeline routing<br>Sets blocked = True / False</div>
+    </div>
+
+    <div class="al c-gray" style="width:20px; height:2px; flex-shrink:0"></div>
+
+    <div class="branch-wrap">
+      <div class="branch-row">
+        <span class="branch-tag tag-t">blocked = True</span>
+        <div class="al c-red" style="width:18px; height:2px"></div>
+        <div class="ah h-red"></div>
+        <div class="node n-block" style="margin-left:6px; min-width:120px">
+          <div class="icon">🚫</div>
+          <div class="label">blocked</div>
+          <div class="sub">Warning returned → END<br>Agent never ran</div>
+        </div>
+      </div>
+      <div class="branch-row">
+        <span class="branch-tag tag-f">blocked = False</span>
+        <div class="al c-green" style="width:18px; height:2px"></div>
+        <div class="ah h-green"></div>
+        <div class="node n-agent" style="margin-left:6px; min-width:120px">
+          <div class="icon">⚡</div>
+          <div class="label">run_agent (Aria)</div>
+          <div class="sub">LangChain ReAct<br>Groq Llama-3.3-70b</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow"><div class="al c-green"></div><div class="ah h-green"></div></div>
+
+    <div class="node n-tools" style="min-width:152px">
+      <div class="icon">🧰</div>
+      <div class="label">Tool Belt</div>
+      <div class="sub">📄 Doc Search &nbsp;·&nbsp; 🧮 Calculator<br>📝 Meeting Summary &nbsp;·&nbsp; 📋 HR Policy</div>
+    </div>
+
+    <div class="arrow"><div class="al c-green"></div><div class="ah h-green"></div></div>
+
+    <div class="pill n-agent"><span class="icon">📤</span><span>Response</span></div>
+
+  </div>
+</div>
+
+<hr>
+
+<!-- ════════════════════════════════════════ -->
+<!-- DIAGRAM 3: COMBINED END-TO-END         -->
+<!-- ════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Diagram 3 — Combined End-to-End Flow</div>
+  <div class="flow" style="align-items: stretch; gap: 8px;">
+
+    <div class="pill n-user" style="padding:16px 18px;">
+      <span class="icon">👤</span>
+      <span style="font-size:10px">Employee<br>Prompt</span>
+    </div>
+
+    <div class="arrow" style="align-self:center"><div class="al c-blue"></div><div class="ah h-blue"></div></div>
+
+    <div class="sg">
+      <div class="sg-label">🔐 SecurePipeline — LangGraph StateGraph</div>
+      <div class="flow">
+        <div class="node n-l1" style="min-width:82px; padding:10px">
+          <div class="icon" style="font-size:16px">📋</div>
+          <div class="label" style="font-size:10px">L1 Rule Engine</div>
+          <div class="sub">78 Regex</div>
+        </div>
+        <div class="arrow"><div class="al c-cyan" style="width:16px"></div><div class="ah h-cyan"></div></div>
+        <div class="node n-l2" style="min-width:82px; padding:10px">
+          <div class="icon" style="font-size:16px">🧠</div>
+          <div class="label" style="font-size:10px">L2 ML Model</div>
+          <div class="sub">TF-IDF</div>
+        </div>
+        <div class="arrow"><div class="al c-purple" style="width:16px"></div><div class="ah h-purple"></div></div>
+        <div class="node n-l3" style="min-width:82px; padding:10px">
+          <div class="icon" style="font-size:16px">🤖</div>
+          <div class="label" style="font-size:10px">L3 LLM</div>
+          <div class="sub">Groq</div>
+        </div>
+        <div class="arrow"><div class="al c-amber" style="width:16px"></div><div class="ah h-amber"></div></div>
+        <div class="node n-decide" style="min-width:82px; padding:10px">
+          <div class="icon" style="font-size:16px">⚖️</div>
+          <div class="label" style="font-size:10px">Decision Engine</div>
+          <div class="sub">Routing</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="branch-wrap" style="align-self:center; gap:12px">
+      <div class="branch-row">
+        <div class="arrow"><div class="al c-red" style="width:14px"></div><div class="ah h-red"></div></div>
+        <div class="node n-block" style="min-width:100px; padding:10px; margin-left:4px">
+          <div class="icon" style="font-size:15px">🚫</div>
+          <div class="label" style="font-size:10px">BLOCKED</div>
+          <div class="sub">Agent never runs</div>
+        </div>
+      </div>
+      <div class="branch-row">
+        <div class="arrow"><div class="al c-green" style="width:14px"></div><div class="ah h-green"></div></div>
+        <div class="sg" style="margin-left:4px">
+          <div class="sg-label">🤖 EnterpriseGraph — LangGraph StateGraph</div>
+          <div class="flow">
+            <div class="node n-gate" style="min-width:78px; padding:10px">
+              <div class="icon" style="font-size:15px">🛡️</div>
+              <div class="label" style="font-size:10px">security_gate</div>
+            </div>
+            <div class="arrow"><div class="al c-blue" style="width:14px"></div><div class="ah h-blue"></div></div>
+            <div class="node n-agent" style="min-width:78px; padding:10px">
+              <div class="icon" style="font-size:15px">⚡</div>
+              <div class="label" style="font-size:10px">run_agent</div>
+              <div class="sub">Aria</div>
+            </div>
+            <div class="arrow"><div class="al c-green" style="width:14px"></div><div class="ah h-green"></div></div>
+            <div class="node n-tools" style="min-width:78px; padding:10px">
+              <div class="icon" style="font-size:15px">🧰</div>
+              <div class="label" style="font-size:10px">4 Tools</div>
+              <div class="sub">Doc·Calc·HR·Meet</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow" style="align-self:center"><div class="al c-green"></div><div class="ah h-green"></div></div>
+
+    <div class="pill n-agent" style="padding:16px 18px;">
+      <span class="icon">📤</span>
+      <span style="font-size:10px">Response<br>Returned</span>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

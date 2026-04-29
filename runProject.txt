@@ -1,0 +1,6 @@
+conda activate secure-agent
+python -m api.main
+
+
+-- run demo
+python run demo.python
